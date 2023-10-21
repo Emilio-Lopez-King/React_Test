@@ -5,9 +5,9 @@ import { useArticleContext } from "./Context/ArticleContext";
 import { deleteArticle } from "../Functions/Articles";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Modal from "react-modal";
 
 const Articles = ({ article }) => {
+  const isOnline = navigator.onLine;
   const [showModal, setShowModal] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
 
@@ -78,6 +78,7 @@ const Articles = ({ article }) => {
             }}
             title="Eliminar"
             onClick={() => handleDeleteClick(article)}
+            disabled={!isOnline}
           >
             <BsTrash3Fill size={20} color="#c60c0c" />
           </button>

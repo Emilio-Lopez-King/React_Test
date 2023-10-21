@@ -1,36 +1,92 @@
-import React, { useState } from "react";
-import { createArticle } from "../Functions/Articles";
+import React, { useState, useEffect } from "react";
+import { createArticle, editArticle } from "../Functions/Articles";
 import { useArticleContext } from "./Context/ArticleContext";
+import { BsEraserFill } from "react-icons/bs";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddArticle = () => {
-  const { selectedArticle } = useArticleContext();
+  const isOnline = navigator.onLine;
+
+  const { selectedArticle, isEditing, setIsEditing, setHaveNewData } =
+    useArticleContext();
 
   const [articleData, setArticleData] = useState({
-    title: selectedArticle?.title || "", // Utiliza el título del artículo seleccionado (si existe)
-    author: selectedArticle?.author || "", // Utiliza el autor del artículo seleccionado (si existe)
-    content: selectedArticle?.content || "", // Utiliza el contenido del artículo seleccionado (si existe)
+    title: "",
+    author: "",
+    content: "",
   });
+
+  useEffect(() => {
+    if (selectedArticle) {
+      setArticleData({
+        title: selectedArticle.title || "",
+        author: selectedArticle.author || "",
+        content: selectedArticle.content || "",
+      });
+    }
+  }, [selectedArticle]);
+
+  const cancelEditing = () => {
+    setArticleData({
+      title: "",
+      author: "",
+      content: "",
+    });
+    setIsEditing(false);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createArticle(
-      articleData,
-      (data) => {
-        setArticleData({
-          title: "",
-          author: "",
-          content: "",
-        });
-      },
-      (error) => {
-        console.error("Error al crear el artículo:", error);
-      }
-    );
+    if (articleData.title && articleData.author && articleData.content) {
+      createArticle(
+        articleData,
+        (data) => {
+          toast.success("El artículo se ha creado con éxito");
+          setArticleData({
+            title: "",
+            author: "",
+            content: "",
+          });
+          setHaveNewData(true);
+        },
+        (error) => {
+          toast.error("Hubo un error al crear el artículo.");
+        }
+      );
+    } else {
+      toast.error("Por favor, completa todos los campos requeridos.");
+    }
+  };
+
+  const handleEditing = (e) => {
+    e.preventDefault();
+    if (articleData.title && articleData.author && articleData.content) {
+      editArticle(
+        selectedArticle._id,
+        articleData,
+        (data) => {
+          toast.success("El artículo se ha actualizado con éxito");
+          setArticleData({
+            title: "",
+            author: "",
+            content: "",
+          });
+          setIsEditing(false);
+          setHaveNewData(true);
+        },
+        (error) => {
+          toast.error("Hubo un error al actualizar el artículo.");
+        }
+      );
+    } else {
+      toast.error("Por favor, completa todos los campos requeridos.");
+    }
   };
 
   return (
     <div className="col-span-12 sm:col-span-4 rounded-lg border p-8">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={isEditing ? handleEditing : handleSubmit}>
         <div className="mb-4">
           <label htmlFor="title" className="block text-gray-700 font-bold">
             Título
@@ -81,14 +137,34 @@ const AddArticle = () => {
             rows="5"
           />
         </div>
-
-        <div className="text-right">
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
-          >
-            Agregar Artículo
+        <div className="flex justify-end gap-4">
+          <button title="cancelar" type="button">
+            <BsEraserFill
+              size={24}
+              color="gray"
+              onClick={() => cancelEditing()}
+            />
           </button>
+
+          {isOnline ? (
+            !isEditing ? (
+              <button
+                type="submit"
+                className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 hover:transition-all"
+              >
+                Agregar Artículo
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="bg-yellow-500 text-white py-2 px-4 rounded-md hover:bg-yellow-600 hover:transition-all"
+              >
+                Editar Artículo
+              </button>
+            )
+          ) : (
+            <p>No puedes agregar entradas en modo fuera de línea.</p>
+          )}
         </div>
       </form>
     </div>

@@ -29,3 +29,36 @@ export const getArticles = (successCallback, errorCallback) => {
       errorCallback(error);
     });
 };
+
+export const editArticle = (articleId, updatedArticle, successCallback, errorCallback) => {
+  fetch(`${Conection}api/Articles/EditArticle/${articleId}`, { 
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedArticle),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      successCallback(data);
+    })
+    .catch((error) => {
+      errorCallback(error);
+    });
+};
+
+export const deleteArticle = (articleId, successCallback, errorCallback) => {
+  fetch(`${Conection}api/Articles/DeleteArticle/${articleId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      successCallback(data);
+    })
+    .catch((error) => {
+      errorCallback(error);
+    });
+};

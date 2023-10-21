@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 const Welcome = () => {
   return (
     <Fragment>
-      <div className="h-20 overflow-hidden mt-16">
+      <div className="h-20 overflow-hidden mt-14">
         {" "}
         {/* Agregar margen superior */}
         <h1 className="text-5xl font-bold text-center text-Titles transition-transform transform hover:scale-110 backdrop-blur-xl">

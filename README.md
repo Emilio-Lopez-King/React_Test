@@ -36,7 +36,7 @@ este es un ejemplo, verifica que la carpeta data se encuentre en la ruta correct
 Después de configurar MongoDB, deberán importar la copia de seguridad de la base de datos que se les proporciona. Para ello, deben seguir estos pasos:
 
 ejecutar el comando 
-**mongorestore --db Test_Blog_DB React_Test\server\restore**
+**mongorestore --db Test_Blog_DB C:\React_Test\server\restore** (asegurate que tu ruta este correcta)
 
 a veces el comando mongo, no es reconocido en la consola, puedes seguir estos pasos para solucionarlo.
 
